@@ -153,6 +153,6 @@ Pro Domäne: Service + Repository + Tests + Twig-Views. Reihenfolge nach Abhäng
 ### Querschnitt (gilt in jeder Phase)
 
 - `declare(strict_types=1)` in jeder neuen Datei; strikte Typen, kein implizites Nullable.
-- Jede neue Klasse mit Unit-Tests (`tests/`, lokal).
+- Jede neue Klasse mit Unit-Tests in `qa-tests/` (committet).
 - phpcs (PSR-12) + PHPStan (max) müssen grün sein, bevor eine Aufgabe als erledigt gilt.
 - Lizenz-Header & Attribution gemäß CLAUDE.md.
