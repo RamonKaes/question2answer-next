@@ -6,6 +6,11 @@
 # Ignore cached files
 /qa-cache/*/
 
+# Dev tool caches (vendor/ is intentionally committed, do NOT ignore it)
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+/.phpunit.cache/
+
 # Other files
 .DS_Store
 .DS_Store?
