@@ -1,41 +1,61 @@
 # How to contribute
 
-As of version 1.6.3, all development of [Question2Answer](http://www.question2answer.org/) will take place through GitHub. Bug reports and pull requests are encouraged, provided they follow these guidelines.
+This repository tracks the **PHP 8.4+ modernization** of [Question2Answer](https://www.question2answer.org/).
+Bug reports and pull requests are welcome, provided they follow these guidelines.
 
 
 ## Bug reports (issues)
 
-If you find a bug (error) with Question2Answer, please [submit an issue here](https://github.com/q2a/question2answer/issues). Be as descriptive as possible: include exactly what you did to make the bug appear, what you expect to happen, and what happened instead. Also include your PHP version and MySQL version. Remember to check for similar issues already reported.
+If you find a bug, please [submit an issue](https://github.com/q2a/question2answer/issues).
+Be as descriptive as possible: include exactly what you did, what you expected, and what
+happened instead. Include your PHP and MySQL/MariaDB versions. Check for similar issues first.
 
-If you think you've found a security issue, you can responsibly disclose it to us using the [contact form here](http://www.question2answer.org/feedback.php).
-
-Note that general troubleshooting issues such as installation or how to use a feature should continue to be asked on the [Question2Answer Q&A](http://www.question2answer.org/qa/).
+For security issues, **do not open a public issue** — see [SECURITY.md](SECURITY.md).
 
 
 ## Pull requests
 
-If you have found the cause of the bug in the Q2A code, you can submit the patch back to the Q2A repository. Create a fork of the repo, make the changes in your fork, then submit a pull request. Bug fix pull requests must be targeted to the **`bugfix`** branch. PRs for new features or large code changes must be made to the **`dev`** branch.
+Fork the repo, create a topic branch, make your changes, then open a pull request against the
+active development branch. Keep commits small, logical and clearly described.
 
-If you wish to implement a feature, you should start a discussion on the [Question2Answer Q&A][QA] first. We welcome all ideas but they may not be appropriate for the Q2A core. Consider whether your idea could be developed as a plugin.
+A pull request is expected to pass the quality gate before review (see below).
 
 
 ## Coding style
 
-From 1.7 onwards a new coding style has been implemented that is more in line with other projects. All PHP code should use these guidelines:
+New code follows **PSR-12 / PER-CS**. The legacy `qa-*` trees keep the old tab-based style until
+they are removed during the rewrite; do not reformat them in unrelated changes.
 
-- PHP code should start with `<?php` (almost always the very first line). The closing tag `?>` should be omitted to avoid accidental whitespace output.
-- PHP files should use UTF-8 encoding without BOM (this is usually default in most text editors).
-- Trailing whitespace (tabs or spaces at the end of lines) should not be present. Any advanced text editor should be able to do this automatically when saving. (For Sublime Text you can add the option `"trim_trailing_white_space_on_save": true` to your preferences. In Notepad++ you can press Alt+Shift+S.)
-- Use tabs for indenting. Each file should start at level 0 (i.e. no indentation).
-- Functions should use a DocBlock-style comment.
-- Operators (`=`, `+` etc) should have a space either side.
-- Control structure keywords (`if`, `else`, `foreach` etc) should have a space between them and the opening parenthesis.
-- Opening braces for classes and functions should be on the next line.
-- Opening braces for control structures should be on the same line. All control structures should use braces.
+- Every PHP file starts with `<?php`, followed by a blank line and the license header block.
+- `declare(strict_types=1);` after the header in every PHP file.
+- **4 spaces** for indentation (no tabs).
+- UTF-8 without BOM; no trailing whitespace; omit the closing `?>` tag.
+- Strict typing everywhere; **no implicit nullable** — write `?string $x = null`, never `string $x = null`.
+- Code is namespaced under `Q2A\` and autoloaded via PSR-4 from `src/`.
+- Public methods and classes use DocBlock comments where they add value.
 
-If in doubt, follow the style of the surrounding code. Code examples can be found in the [Q2A docs here](http://docs.question2answer.org/contribute/).
+The authoritative rules are encoded in the tooling — when in doubt, run it (see below).
 
 
-## Documentation
+## Tooling (local, via Composer)
 
-Please see the repository [q2a.github.io](https://github.com/q2a/q2a.github.io/) which automatically produces the documentation website [docs.question2answer.org](http://docs.question2answer.org/).
+Dependencies are managed with Composer **on your machine only**; the committed `vendor/`
+directory means end users never need to run Composer.
+
+```sh
+composer install        # set up dependencies and dev tools
+composer cs             # check coding standard (php-cs-fixer, dry-run)
+composer cs:fix         # auto-fix coding standard
+composer stan           # static analysis (PHPStan, level max)
+composer test           # run the test suite (PHPUnit)
+composer check          # cs + stan + test (the full quality gate)
+```
+
+All of the above must pass before a change is considered done. The same checks run in CI on
+every push and pull request.
+
+
+## License
+
+By contributing you agree that your contributions are licensed under **GPL-2.0-or-later**
+(see [LICENSE](LICENSE)). New files carry the standard header; see [CLAUDE.md](CLAUDE.md).
