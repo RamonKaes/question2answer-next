@@ -147,8 +147,8 @@ declare(strict_types=1);
 
 ## Aktueller Stand
 
-- **Phase:** 2 (Architektur-Grundgerüst) — in Arbeit. Erledigt: Front Controller +
-  Router (Symfony Routing) mit Controller-Interface & 404-Handling. Offen: DI-Container, `.env`.
+- **Phase:** 2 (Architektur-Grundgerüst) — in Arbeit. Erledigt: Front Controller, Router
+  (Symfony Routing, Controller-Interface, 404), DI-Container (Controller als Services). Offen: `.env`, Twig.
 - **Stack installiert:** Symfony 7.4-Komponenten (HttpFoundation, Routing, DI, Config, Console,
   EventDispatcher, Cache, Dotenv), Twig 3, Doctrine DBAL 4 + Migrations, Monolog 3; dev: PHPUnit 11.5,
   PHPStan 2, Rector 2, php-cs-fixer 3. `vendor/` + `composer.lock` committet.

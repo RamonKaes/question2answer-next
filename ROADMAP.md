@@ -63,7 +63,7 @@ Diese Roadmap wird **der Reihe nach** abgearbeitet. Jede Phase hat eine
 - [x] Single Front Controller (`public/index.php`), HttpFoundation Request/Response.
 - [ ] Router, DI-Container, Konfiguration:
   - [x] Router (Symfony Routing) + erste Route, in den Kernel verdrahtet (Controller-Interface, 404-Handling).
-  - [ ] DI-Container (Symfony DependencyInjection) + Controller-Resolver darüber.
+  - [x] DI-Container (Symfony DependencyInjection); Kernel löst Controller als Services daraus auf.
   - [ ] Konfiguration via `.env` (statt `qa-config.php`).
 - [ ] Doctrine DBAL Connection-Factory (ersetzt [qa-include/qa-db.php](qa-include/qa-db.php)).
 - [ ] Twig-Integration mit striktem Auto-Escaping; Basis-Layout mit Landmark-Rollen (a11y).
