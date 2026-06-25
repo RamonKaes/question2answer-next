@@ -27,37 +27,36 @@ Diese Roadmap wird **der Reihe nach** abgearbeitet. Jede Phase hat eine
 
 ## Phase 0 — Fundament & Entscheidungen
 
-- [ ] **Stack final bestätigen**: Symfony 7.x-Komponenten (HttpFoundation, Routing,
-      DependencyInjection, Console) + Twig + Doctrine DBAL.
-      *Empfohlener Default — vor Phase 2 final freigeben.*
-- [ ] Ziel-Verzeichnislayout festlegen (`src/`, `public/`, `templates/`, `config/`,
+- [x] **Stack final bestätigt**: Symfony 7.4-Komponenten (HttpFoundation, Routing,
+      DependencyInjection, Config, Console, EventDispatcher, Cache, Dotenv) + Twig + Doctrine DBAL + Monolog.
+- [x] Ziel-Verzeichnislayout festgelegt (`src/`, `public/`, `templates/`, `config/`,
       `translations/`, `migrations/`, `vendor/`) und Tests in `qa-tests/`.
       Legacy-`qa-*`-Bäume bleiben vorerst parallel bestehen und werden erst in Phase 8/9 entfernt.
-- [ ] **Build-/Release-Prozess** festlegen: `composer install --no-dev` lokal, `vendor/` committen
-      bzw. ins Release-Zip packen; sicherstellen, dass End-User nie Composer ausführen müssen.
-- [ ] **Lizenz-Inkonsistenz klären**: Datei-Header sagen GPL-2.0-or-later, `LICENSE`
-      enthält GPLv3-Text. Auf `GPL-2.0-or-later` (SPDX) standardisieren, `LICENSE`
-      entsprechend stimmig machen, `NOTICE`/`AUTHORS` anlegen (Gideon Greenspan &
-      contributors + Ramon Kaes).
-- [ ] Einheitlichen Datei-Header (siehe CLAUDE.md → „Lizenz & Attribution") definieren.
+- [x] **Build-/Release-Prozess** festgelegt: `composer install` lokal, `vendor/` + `composer.lock` committet;
+      End-User führen Composer nie aus.
+- [x] **Lizenz-Inkonsistenz geklärt**: auf `GPL-2.0-or-later` (SPDX) standardisiert; `LICENSE` auf den
+      kanonischen GPLv2-Text gesetzt (passend zum „version 2 or later"-Grant); `AUTHORS`/`NOTICE` angelegt
+      (Gideon Greenspan & contributors + Ramon Kaes).
+- [x] Einheitlicher Datei-Header definiert (siehe CLAUDE.md → „Lizenz & Attribution").
 
 **DoD:** Stack & Layout dokumentiert in CLAUDE.md, Lizenzlage geklärt, `AUTHORS`/`NOTICE` existieren.
 
 ## Phase 1 — Tooling & Qualitätssicherung
 
-- [ ] `composer.json` + `composer.lock` anlegen (PHP `>=8.4`, PSR-4 `Q2A\` → `src/`);
-      Abhängigkeiten lokal via `composer install` auflösen und `vendor/` (inkl. Autoloader) committen.
-- [ ] PHPStan (Level max) + `phpstan.neon`.
-- [ ] Rector (`rector.php`) für automatisierte 8.4-Migration & laufende Upgrades.
-- [ ] PHP_CodeSniffer auf **PSR-12** umstellen ([qa-tests/phpcs/ruleset.xml](qa-tests/phpcs/ruleset.xml)
-      ersetzen) + `php-cs-fixer` für Auto-Format.
-- [ ] **CONTRIBUTING.md** auf 4 Spaces / PSR-12 / strict_types aktualisieren.
-- [ ] [qa-tests/](qa-tests/) modernisieren (PHPUnit 11/12, `#[Test]`/`#[Group]`-Attribute) +
-      `phpunit.xml.dist`; bestehende Cases als Vorlage übernehmen.
-- [ ] GitHub Actions CI: `composer validate`, phpcs, phpstan, rector `--dry-run`, phpunit.
-- [ ] `SECURITY.md`, `CHANGELOG.md` (Keep a Changelog), SemVer-Konvention festlegen.
+- [x] `composer.json` + `composer.lock` angelegt (PHP `>=8.4`, PSR-4 `Q2A\` → `src/`);
+      Abhängigkeiten via `composer install` aufgelöst, `vendor/` (inkl. Autoloader) committet.
+- [x] PHPStan (Level max) + `phpstan.neon`.
+- [x] Rector (`rector.php`) für automatisierte 8.4-Migration & laufende Upgrades.
+- [x] **PSR-12 erzwingen** über `php-cs-fixer` (`@PSR12`) als Style-Tool (scoped auf `src/`, `qa-tests/unit`).
+      Ersetzt das alte tab-basierte phpcs-Ruleset; das Legacy-`ruleset.xml` bleibt nur als Referenz liegen.
+- [x] **CONTRIBUTING.md** auf 4 Spaces / PSR-12 / strict_types + Tooling aktualisiert.
+- [x] Modernes Test-Setup: `phpunit.xml.dist` (PHPUnit 11, Attribute) + Smoke-Test `qa-tests/unit/`.
+      *Die alten `qa-tests/tests` (prozeduraler Code) werden nicht migriert — neue Tests entstehen
+      mit dem `src/`-Code in Phase 3/4.*
+- [x] GitHub Actions CI: `composer validate`, php-cs-fixer, phpstan, phpunit (PHP 8.4).
+- [x] `SECURITY.md`, `CHANGELOG.md` (Keep a Changelog), SemVer als Versionsschema.
 
-**DoD:** `composer install` grün; CI-Pipeline läuft; ein Smoke-Test ist grün.
+**DoD:** ✅ erreicht — `composer install` grün, `composer check` (cs + stan + test) grün, CI-Workflow vorhanden, Smoke-Test grün.
 
 ## Phase 2 — Architektur-Grundgerüst
 

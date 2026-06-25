@@ -68,7 +68,8 @@ Die Legacy-Bäume `qa-include/`, `qa-theme/`, `qa-plugin/`, `qa-lang/` bleiben
 - `declare(strict_types=1);` direkt nach dem Datei-Header.
 - PSR-12, 4 Spaces, kein schließendes `?>`, UTF-8 ohne BOM, kein Trailing Whitespace.
 - Strikte Typen überall; **kein implizites Nullable** — `?string $x = null`, nie `string $x = null`.
-- PHPStan Level max und phpcs (PSR-12) müssen grün sein, bevor eine Aufgabe „fertig" ist.
+- PHPStan Level max und php-cs-fixer (PSR-12) müssen grün sein, bevor eine Aufgabe „fertig" ist
+  (`composer check` führt cs + stan + test gemeinsam aus).
 
 ### PHP-8.4-Features — bewusst einsetzen
 
@@ -131,7 +132,7 @@ declare(strict_types=1);
 
 - Sprache mit dem Maintainer: **Deutsch**.
 - Roadmap **der Reihe nach** abarbeiten; nach jeder erledigten Aufgabe „Aktueller Stand" updaten.
-- Keine Aufgabe als erledigt melden, ohne dass phpcs + PHPStan + relevante Tests grün sind.
+- Keine Aufgabe als erledigt melden, ohne dass php-cs-fixer + PHPStan + relevante Tests grün sind (`composer check`).
 - Bei Architektur-Weichen, die mehrere Phasen prägen, Rücksprache halten statt raten.
 - Commits/PRs nur auf Aufforderung; nicht auf den Default-Branch committen ohne Branch.
 
@@ -146,16 +147,16 @@ declare(strict_types=1);
 
 ## Aktueller Stand
 
-- **Phase:** 1 (Tooling & Qualitätssicherung) — in Arbeit.
+- **Phase:** 1 (Tooling & Qualitätssicherung) — ✅ **abgeschlossen**. Als Nächstes Phase 2.
 - **Stack installiert:** Symfony 7.4-Komponenten (HttpFoundation, Routing, DI, Config, Console,
   EventDispatcher, Cache, Dotenv), Twig 3, Doctrine DBAL 4 + Migrations, Monolog 3; dev: PHPUnit 11.5,
-  PHPStan 2, Rector 2, php-cs-fixer 3. `vendor/` + `composer.lock` werden committet.
+  PHPStan 2, Rector 2, php-cs-fixer 3. `vendor/` + `composer.lock` committet.
 - **Pipeline grün (lokal verifiziert):** `composer cs` (PSR-12), `composer stan` (level max),
-  `composer test` (PHPUnit) laufen fehlerfrei. GitHub-Actions-CI unter
+  `composer test` (PHPUnit), `vendor/bin/rector --dry-run` laufen fehlerfrei. CI unter
   [.github/workflows/ci.yml](.github/workflows/ci.yml).
-- **Erledigt:** Planung (ROADMAP/CLAUDE); Attribution (AUTHORS/NOTICE, SPDX); `composer.json`/`.lock`
-  + `vendor/`; `src/Version.php` (PSR-4); `phpstan.neon`; `.php-cs-fixer.dist.php`;
-  `phpunit.xml.dist` + Smoke-Test `qa-tests/unit/VersionTest.php`; CI-Workflow.
-- **Offen / nächster Schritt:** `rector.php`; CONTRIBUTING.md auf PSR-12 umstellen; Legacy-`qa-tests`
-  modernisieren; `LICENSE` final auf GPL-2.0-or-later stimmig ziehen. Danach **Phase 2**
-  (Front Controller, Routing, DI, DBAL-Connection, Twig).
+- **Erledigt (Phase 0–1):** Planung (ROADMAP/CLAUDE); Attribution (AUTHORS/NOTICE, SPDX);
+  `LICENSE` auf GPLv2-Text gesetzt; `composer.json`/`.lock` + `vendor/`; `src/Version.php` (PSR-4);
+  `phpstan.neon`; `.php-cs-fixer.dist.php`; `rector.php`; `phpunit.xml.dist` + Smoke-Test;
+  CONTRIBUTING.md (PSR-12 + Tooling); `SECURITY.md`; `CHANGELOG.md`; CI-Workflow.
+- **Nächster Schritt:** **Phase 2** — Front Controller (`public/index.php`), Routing, DI-Container,
+  `.env`-Konfiguration, Doctrine-DBAL-Connection-Factory, Twig-Integration mit Basis-Layout.
