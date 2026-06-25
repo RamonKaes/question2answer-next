@@ -1,0 +1,15 @@
+Question2Answer — Authors and Contributors
+==========================================
+
+Question2Answer was created by Gideon Greenspan and contributors.
+  https://github.com/q2a/question2answer
+
+Original authors / copyright holders:
+  Gideon Greenspan and contributors
+
+2026 modernization (PHP 8.4+, PSR-12, ground-up rewrite):
+  Ramon Kaes
+
+This project is licensed under the GNU General Public License, version 2.0
+or (at your option) any later version (SPDX: GPL-2.0-or-later). See the
+LICENSE file for the full license text and NOTICE for copyright details.
