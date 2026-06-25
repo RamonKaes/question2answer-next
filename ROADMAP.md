@@ -60,7 +60,7 @@ Diese Roadmap wird **der Reihe nach** abgearbeitet. Jede Phase hat eine
 
 ## Phase 2 — Architektur-Grundgerüst
 
-- [ ] Single Front Controller (`public/index.php`), HttpFoundation Request/Response.
+- [x] Single Front Controller (`public/index.php`), HttpFoundation Request/Response.
 - [ ] Router + erste Route, DI-Container, Konfiguration via `.env` (statt `qa-config.php`).
 - [ ] Doctrine DBAL Connection-Factory (ersetzt [qa-include/qa-db.php](qa-include/qa-db.php)).
 - [ ] Twig-Integration mit striktem Auto-Escaping; Basis-Layout mit Landmark-Rollen (a11y).

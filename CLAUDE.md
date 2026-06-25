@@ -147,7 +147,7 @@ declare(strict_types=1);
 
 ## Aktueller Stand
 
-- **Phase:** 1 (Tooling & Qualitätssicherung) — ✅ **abgeschlossen**. Als Nächstes Phase 2.
+- **Phase:** 2 (Architektur-Grundgerüst) — in Arbeit. Punkt 1 (Front Controller) erledigt.
 - **Stack installiert:** Symfony 7.4-Komponenten (HttpFoundation, Routing, DI, Config, Console,
   EventDispatcher, Cache, Dotenv), Twig 3, Doctrine DBAL 4 + Migrations, Monolog 3; dev: PHPUnit 11.5,
   PHPStan 2, Rector 2, php-cs-fixer 3. `vendor/` + `composer.lock` committet.
