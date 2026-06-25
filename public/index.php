@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+$routes = require dirname(__DIR__) . '/config/routes.php';
+
 $request = Request::createFromGlobals();
-$response = new Kernel()->handle($request);
+$response = new Kernel($routes)->handle($request);
 $response->send();

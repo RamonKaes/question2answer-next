@@ -7,7 +7,7 @@
     Modernization (PHP 8.4+, 2026) by Ramon Kaes
 
     File: src/Http/Kernel.php
-    Description: Minimal HTTP kernel turning a Request into a Response
+    Description: HTTP kernel — matches the request to a route and dispatches it
 
     License: GPL-2.0-or-later — see LICENSE
 */
@@ -16,23 +16,50 @@ declare(strict_types=1);
 
 namespace Q2A\Http;
 
-use Q2A\Version;
+use Q2A\Http\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
- * The HTTP kernel is the single entry seam between the front controller and the
- * application. For now it returns a placeholder response; routing, the DI
- * container and the rendering layer are wired in by the following Phase 2 steps.
+ * The HTTP kernel is the single seam between the front controller and the
+ * application: it matches the incoming request against the route collection and
+ * dispatches it to the resolved controller. The DI container and rendering layer
+ * are wired in by the following Phase 2 steps.
  */
 final class Kernel
 {
+    public function __construct(private readonly RouteCollection $routes)
+    {
+    }
+
     public function handle(Request $request): Response
     {
-        return new Response(
-            'Question2Answer ' . Version::CURRENT . " is running.\n",
-            Response::HTTP_OK,
-            ['Content-Type' => 'text/plain; charset=utf-8'],
-        );
+        $context = new RequestContext();
+        $context->fromRequest($request);
+
+        $matcher = new UrlMatcher($this->routes, $context);
+
+        try {
+            $parameters = $matcher->matchRequest($request);
+        } catch (ResourceNotFoundException) {
+            return new Response(
+                "Not Found\n",
+                Response::HTTP_NOT_FOUND,
+                ['Content-Type' => 'text/plain; charset=utf-8'],
+            );
+        }
+
+        $controllerClass = $parameters['_controller'] ?? null;
+        if (!is_string($controllerClass) || !is_a($controllerClass, Controller::class, true)) {
+            throw new \RuntimeException('The matched route does not reference a valid controller.');
+        }
+
+        $controller = new $controllerClass();
+
+        return $controller($request);
     }
 }
