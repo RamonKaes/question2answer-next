@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Q2A\Http;
 
+use Psr\Container\ContainerInterface;
 use Q2A\Http\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,13 +28,15 @@ use Symfony\Component\Routing\RouteCollection;
 /**
  * The HTTP kernel is the single seam between the front controller and the
  * application: it matches the incoming request against the route collection and
- * dispatches it to the resolved controller. The DI container and rendering layer
- * are wired in by the following Phase 2 steps.
+ * dispatches it to the controller resolved from the DI container. The rendering
+ * layer is wired in by the following Phase 2 steps.
  */
 final class Kernel
 {
-    public function __construct(private readonly RouteCollection $routes)
-    {
+    public function __construct(
+        private readonly RouteCollection $routes,
+        private readonly ContainerInterface $container,
+    ) {
     }
 
     public function handle(Request $request): Response
@@ -53,12 +56,19 @@ final class Kernel
             );
         }
 
-        $controllerClass = $parameters['_controller'] ?? null;
-        if (!is_string($controllerClass) || !is_a($controllerClass, Controller::class, true)) {
-            throw new \RuntimeException('The matched route does not reference a valid controller.');
+        $controllerId = $parameters['_controller'] ?? null;
+        if (!is_string($controllerId) || !$this->container->has($controllerId)) {
+            throw new \RuntimeException('The matched route does not reference a known controller service.');
         }
 
-        $controller = new $controllerClass();
+        $controller = $this->container->get($controllerId);
+        if (!$controller instanceof Controller) {
+            throw new \RuntimeException(sprintf(
+                'Controller service "%s" must implement %s.',
+                $controllerId,
+                Controller::class,
+            ));
+        }
 
         return $controller($request);
     }
