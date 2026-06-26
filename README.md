@@ -5,6 +5,24 @@ Question2Answer
 
 **Note:** if you're using Q2A directly from git, make sure to use the master branch as that is the latest stable version. Or download an official release from the [Q2A website][Q2A].
 
+
+----------
+
+### Modernization (PHP 8.4+, 2026) — work in progress
+
+The `feature/php84-modernization` branch is a ground-up rewrite of Q2A onto a modern,
+strictly-typed **PHP 8.4+** stack (Symfony components, Twig, Doctrine DBAL), following
+**PSR-12**, **WCAG 2.2 AA** accessibility and expanded **i18n** goals. Original authorship
+is preserved — see [AUTHORS](AUTHORS) and [NOTICE](NOTICE).
+
+- Plan & status: [ROADMAP.md](ROADMAP.md)
+- Contributor & architecture guide: [CLAUDE.md](CLAUDE.md)
+- Coding standard & tooling: [CONTRIBUTING.md](CONTRIBUTING.md)
+
+The legacy 1.8.8 trees (`qa-include/`, `qa-theme/`, `qa-plugin/`, `qa-lang/`) remain in
+place until feature parity is reached (removed in Phase 9). Existing plugins and themes
+are **not** compatible with the rewrite.
+
 Q2A is highly customisable with many awesome features:
 
 - Asking and answering questions (duh!)

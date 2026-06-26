@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Quality tooling: PHPStan (level max), php-cs-fixer (PSR-12), Rector (PHP 8.4),
     PHPUnit 11, and a GitHub Actions CI pipeline.
   - First strict-typed PSR-4 class `Q2A\Version` and a test pipeline smoke test.
+- PHP 8.4+ architecture skeleton (Phase 2, in progress):
+  - Single front controller (`public/index.php`) built on Symfony HttpFoundation.
+  - HTTP kernel with routing (Symfony Routing), a `Controller` contract and 404 handling.
+  - Compiled DI container (Symfony DependencyInjection) resolving controllers as services.
+  - Environment configuration via symfony/dotenv and a typed, injectable `Q2A\Config\AppConfig`
+    (replacing qa-config.php defines); `.env` committed, `.env.local` gitignored.
 
 ### Changed
 
