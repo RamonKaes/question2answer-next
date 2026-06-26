@@ -22,5 +22,5 @@ namespace Q2A;
  */
 final class Version
 {
-    public const string CURRENT = '2.0.0-dev';
+    public const string CURRENT = '2.0.0-alpha.1';
 }

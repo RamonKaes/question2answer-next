@@ -30,5 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Coding standard moved to PSR-12 / PER-CS (4 spaces) with `declare(strict_types=1)`
   for all new code; `CONTRIBUTING.md` updated accordingly.
 - `LICENSE` aligned to GPL v2 text to match the project's "version 2 or later" grant.
+- Started a new `2.0.0` version line for the rewrite (`2.0.0-alpha.1`); `src/Version.php` is the
+  source of truth and `VERSION.txt` reflects it. The legacy `QA_VERSION` (1.8.8) stays until the
+  legacy trees are removed in Phase 9.
 
-[Unreleased]: https://github.com/q2a/question2answer/commits/feature/php84-modernization
+[Unreleased]: https://github.com/RamonKaes/question2answer-next/commits/main

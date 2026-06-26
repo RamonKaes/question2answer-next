@@ -10,7 +10,7 @@ Question2Answer
 
 ### Modernization (PHP 8.4+, 2026) — work in progress
 
-The `feature/php84-modernization` branch is a ground-up rewrite of Q2A onto a modern,
+This repository is a ground-up rewrite of Q2A onto a modern,
 strictly-typed **PHP 8.4+** stack (Symfony components, Twig, Doctrine DBAL), following
 **PSR-12**, **WCAG 2.2 AA** accessibility and expanded **i18n** goals. Original authorship
 is preserved — see [AUTHORS](AUTHORS) and [NOTICE](NOTICE).
