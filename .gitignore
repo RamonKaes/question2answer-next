@@ -11,6 +11,9 @@
 /.env.local.php
 /.env.*.local
 
+# Dev tools live here (bamarni/composer-bin-plugin); never shipped, install locally
+/vendor-bin/*/vendor/
+
 # Dev tool caches (vendor/ is intentionally committed, do NOT ignore it)
 /.php-cs-fixer.cache
 /.phpunit.result.cache

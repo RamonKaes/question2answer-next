@@ -1,0 +1,14 @@
+{
+    "//": "Development tools, isolated from the shipped vendor/ via bamarni/composer-bin-plugin. Installed into vendor-bin/tools/vendor/ (gitignored), never shipped to end users.",
+    "require": {
+        "phpunit/phpunit": "^11.4",
+        "phpstan/phpstan": "^2.0",
+        "rector/rector": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.64"
+    },
+    "config": {
+        "platform": {
+            "php": "8.4"
+        }
+    }
+}
