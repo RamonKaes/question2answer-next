@@ -21,9 +21,9 @@ use Q2A\Version;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class HomeController implements Controller
+final readonly class HomeController implements Controller
 {
-    public function __construct(private readonly AppConfig $config)
+    public function __construct(private AppConfig $config)
     {
     }
 

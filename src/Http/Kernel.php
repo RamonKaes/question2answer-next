@@ -18,6 +18,7 @@ namespace Q2A\Http;
 
 use Psr\Container\ContainerInterface;
 use Q2A\Http\Controller\Controller;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -31,11 +32,11 @@ use Symfony\Component\Routing\RouteCollection;
  * dispatches it to the controller resolved from the DI container. The rendering
  * layer is wired in by the following Phase 2 steps.
  */
-final class Kernel
+final readonly class Kernel
 {
     public function __construct(
-        private readonly RouteCollection $routes,
-        private readonly ContainerInterface $container,
+        private RouteCollection $routes,
+        private ContainerInterface $container,
     ) {
     }
 
@@ -58,12 +59,12 @@ final class Kernel
 
         $controllerId = $parameters['_controller'] ?? null;
         if (!is_string($controllerId) || !$this->container->has($controllerId)) {
-            throw new \RuntimeException('The matched route does not reference a known controller service.');
+            throw new RuntimeException('The matched route does not reference a known controller service.');
         }
 
         $controller = $this->container->get($controllerId);
         if (!$controller instanceof Controller) {
-            throw new \RuntimeException(sprintf(
+            throw new RuntimeException(sprintf(
                 'Controller service "%s" must implement %s.',
                 $controllerId,
                 Controller::class,
