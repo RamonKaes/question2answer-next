@@ -33,7 +33,8 @@ Diese Roadmap wird **der Reihe nach** abgearbeitet. Jede Phase hat eine
       `translations/`, `migrations/`, `vendor/`) und Tests in `qa-tests/`.
       Legacy-`qa-*`-Bäume bleiben vorerst parallel bestehen und werden erst in Phase 8/9 entfernt.
 - [x] **Build-/Release-Prozess** festgelegt: `composer install` lokal, `vendor/` + `composer.lock` committet;
-      End-User führen Composer nie aus.
+      End-User führen Composer nie aus. Dev-Tools via `composer-bin-plugin` in `vendor-bin/` (gitignored),
+      committetes `vendor/` bleibt schlank (nur Produktion, ~14 MB).
 - [x] **Lizenz-Inkonsistenz geklärt**: auf `GPL-2.0-or-later` (SPDX) standardisiert; `LICENSE` auf den
       kanonischen GPLv2-Text gesetzt (passend zum „version 2 or later"-Grant); `AUTHORS`/`NOTICE` angelegt
       (Gideon Greenspan & contributors + Ramon Kaes).

@@ -33,5 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Started a new `2.0.0` version line for the rewrite (`2.0.0-alpha.1`); `src/Version.php` is the
   source of truth and `VERSION.txt` reflects it. The legacy `QA_VERSION` (1.8.8) stays until the
   legacy trees are removed in Phase 9.
+- Slimmed the shipped `vendor/` to production dependencies only (~14 MB instead of ~85 MB) by
+  isolating dev tools (PHPUnit, PHPStan, Rector, php-cs-fixer) via `bamarni/composer-bin-plugin`
+  into a gitignored `vendor-bin/`.
+- Modernized `Kernel` and `HomeController` to `final readonly` classes (Rector).
 
 [Unreleased]: https://github.com/RamonKaes/question2answer-next/commits/main

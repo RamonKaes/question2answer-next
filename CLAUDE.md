@@ -24,6 +24,8 @@ Mitgelieferte Addons werden später angepasst (Phase 8).
   Abhängigkeitsbaum auf und befüllt `vendor/`. `composer.json` + `composer.lock` **und**
   `vendor/` werden **committet**. End-User laden hoch und es läuft — sie führen Composer **nie** aus.
   - Autoloading über den von Composer generierten **PSR-4**-Autoloader (Namespace `Q2A\`, committet).
+  - **Dev-Tools isoliert** via `bamarni/composer-bin-plugin` in `vendor-bin/` (gitignored); das
+    ausgelieferte `vendor/` enthält **nur Produktion** (~14 MB statt ~85 MB).
 - **DB:** Doctrine DBAL (Query-Builder, durchgängig prepared).
 - **Templating/Themes:** Twig (Auto-Escaping → a11y/i18n/XSS). **Dritt-Themes bleiben möglich**:
   ein Theme ist ein Paket-Verzeichnis (`theme.json` + `templates/`-Overrides + `assets/` + optional
@@ -152,9 +154,10 @@ declare(strict_types=1);
   typisiertes `AppConfig`, autowired). Offen: Doctrine-DBAL-Connection, Twig, Error-Handling/Logging.
 - **Stack installiert:** Symfony 7.4-Komponenten (HttpFoundation, Routing, DI, Config, Console,
   EventDispatcher, Cache, Dotenv), Twig 3, Doctrine DBAL 4 + Migrations, Monolog 3; dev: PHPUnit 11.5,
-  PHPStan 2, Rector 2, php-cs-fixer 3. `vendor/` + `composer.lock` committet.
+  PHPStan 2, Rector 2, php-cs-fixer 3 (in `vendor-bin/`, gitignored). Committet wird nur das
+  Produktions-`vendor/` (~14 MB) + `composer.lock`.
 - **Pipeline grün (lokal verifiziert):** `composer cs` (PSR-12), `composer stan` (level max),
-  `composer test` (PHPUnit), `vendor/bin/rector --dry-run` laufen fehlerfrei. CI unter
+  `composer test` (PHPUnit), `composer rector` laufen fehlerfrei. CI unter
   [.github/workflows/ci.yml](.github/workflows/ci.yml).
 - **Erledigt (Phase 0–1):** Planung (ROADMAP/CLAUDE); Attribution (AUTHORS/NOTICE, SPDX);
   `LICENSE` auf GPLv2-Text gesetzt; `composer.json`/`.lock` + `vendor/`; `src/Version.php` (PSR-4);

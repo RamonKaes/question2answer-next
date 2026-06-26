@@ -40,13 +40,17 @@ The authoritative rules are encoded in the tooling — when in doubt, run it (se
 ## Tooling (local, via Composer)
 
 Dependencies are managed with Composer **on your machine only**; the committed `vendor/`
-directory means end users never need to run Composer.
+directory (production dependencies only, ~14 MB) means end users never need to run Composer.
+Dev tools (PHPUnit, PHPStan, Rector, php-cs-fixer) are isolated via
+[`bamarni/composer-bin-plugin`](https://github.com/bamarni/composer-bin-plugin) into
+`vendor-bin/` (gitignored) and are installed automatically by `composer install`.
 
 ```sh
-composer install        # set up dependencies and dev tools
+composer install        # install production deps + dev tools (into vendor-bin/)
 composer cs             # check coding standard (php-cs-fixer, dry-run)
 composer cs:fix         # auto-fix coding standard
 composer stan           # static analysis (PHPStan, level max)
+composer rector         # automated refactoring / upgrade rules (dry-run)
 composer test           # run the test suite (PHPUnit)
 composer check          # cs + stan + test (the full quality gate)
 ```
