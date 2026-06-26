@@ -1,106 +1,102 @@
 # CLAUDE.md
 
-Leitfaden für die Arbeit von Claude (und Menschen) an diesem Repository.
-Dies ist ein **lebendes Dokument** — bei relevanten Änderungen aktuell halten,
-insbesondere den Abschnitt „Aktueller Stand".
+Guidance for working on this repository (for Claude and humans). This is a **living
+document** — keep it current when decisions change. Progress and status are tracked in
+[ROADMAP.md](ROADMAP.md), not here.
 
-## Projekt
+## Project
 
-Modernisierung von **Question2Answer (Q2A)** — einer Q&A-Plattform — von der
-prozeduralen Version 1.8.8 auf einen **PHP-8.4+-Stack nach Industriestandard 2026**.
-Es handelt sich um einen **Ground-up Rewrite mit Feature-Parität**, nicht um ein
-In-place-Patching. Detaillierte Schritte: siehe [ROADMAP.md](ROADMAP.md).
+Modernization of **Question2Answer (Q2A)** — a Q&A platform — from the procedural 1.8.8
+release to a **PHP 8.4+ stack (2026 industry standard)**. This is a **ground-up rewrite with
+feature parity**, not in-place patching. Step-by-step plan: see [ROADMAP.md](ROADMAP.md).
 
-**Wichtig:** Keine Rückwärtskompatibilität zu bestehenden Plugins/Themes nötig.
-Mitgelieferte Addons werden später angepasst (Phase 8).
+No backward compatibility with existing plugins/themes is required; bundled add-ons are
+ported later (Phase 8).
 
-## Grundsatzentscheidungen (verbindlich)
+## Binding decisions
 
-- **Architektur:** Ground-up Rewrite, Feature-Parität zu 1.8.8.
-- **PHP:** 8.4+, `declare(strict_types=1)` in **jeder** Datei.
-- **Code-Stil:** PSR-12 / PER-CS, **4 Spaces** (keine Tabs). CONTRIBUTING.md und
-  das phpcs-Ruleset werden entsprechend angepasst.
-- **Composer = nur lokales Build-Werkzeug:** Auf dem Laptop löst Composer den
-  Abhängigkeitsbaum auf und befüllt `vendor/`. `composer.json` + `composer.lock` **und**
-  `vendor/` werden **committet**. End-User laden hoch und es läuft — sie führen Composer **nie** aus.
-  - Autoloading über den von Composer generierten **PSR-4**-Autoloader (Namespace `Q2A\`, committet).
-  - **Dev-Tools isoliert** via `bamarni/composer-bin-plugin` in `vendor-bin/` (gitignored); das
-    ausgelieferte `vendor/` enthält **nur Produktion** (~14 MB statt ~85 MB).
-- **DB:** Doctrine DBAL (Query-Builder, durchgängig prepared).
-- **Templating/Themes:** Twig (Auto-Escaping → a11y/i18n/XSS). **Dritt-Themes bleiben möglich**:
-  ein Theme ist ein Paket-Verzeichnis (`theme.json` + `templates/`-Overrides + `assets/` + optional
-  `Theme.php`), das Core-Templates per Twig-Namespace (`@core/…`) überschreibt oder via
-  `{% extends %}`/`{% block %}` erweitert. Plugin-Injektion über Hooks (ersetzt das alte „layer"-System);
-  rein optische Anpassung über CSS Custom Properties / Design-Tokens.
-- **i18n:** native `MessageFormatter` (ICU MessageFormat) aus `ext-intl` — keine Bibliothek.
-  `ext-intl` wird damit zur dokumentierten Installationsvoraussetzung.
-- **a11y:** WCAG 2.2 AA als Mindeststandard.
-- **Branding/Lizenz:** Q2A-Name bleibt; Original-Credits bleiben; „Ramon Kaes" ergänzt; GPL-2.0-or-later.
+- **Architecture:** ground-up rewrite, feature parity with 1.8.8.
+- **PHP:** 8.4+, `declare(strict_types=1)` in **every** file.
+- **Code style:** PSR-12 / PER-CS, **4 spaces** (no tabs), enforced by php-cs-fixer.
+- **Composer = local build tool only:** Composer resolves dependencies on the developer
+  machine and fills `vendor/`. `composer.json` + `composer.lock` **and** `vendor/` are
+  **committed**. End users upload files and it runs — they never run Composer.
+  - Autoloading via Composer's generated **PSR-4** autoloader (namespace `Q2A\`, committed).
+  - Dev tools are isolated via `bamarni/composer-bin-plugin` in `vendor-bin/` (gitignored);
+    the shipped `vendor/` is **production only** (~14 MB).
+- **DB:** Doctrine DBAL (query builder, prepared throughout).
+- **Templating/Themes:** Twig (auto-escaping → a11y/i18n/XSS). **Third-party themes stay
+  possible**: a theme is a package directory (`theme.json` + `templates/` overrides + `assets/`
+  + optional `Theme.php`) that overrides core templates via the `@core/…` Twig namespace or
+  extends them with `{% extends %}`/`{% block %}`. Plugin injection via hooks (replaces the old
+  "layer" system); purely visual changes via CSS custom properties / design tokens.
+- **i18n:** native `MessageFormatter` (ICU MessageFormat) from `ext-intl` — no library.
+  `ext-intl` is therefore a documented install requirement.
+- **a11y:** WCAG 2.2 AA as the minimum.
+- **Branding/License:** Q2A name stays; original credits stay; "Ramon Kaes" added;
+  GPL-2.0-or-later.
 
-## Empfohlener Stack
+## Recommended stack
 
-- **Symfony 7.x-Komponenten** (HttpFoundation, Routing, DependencyInjection, Console) als Fundament.
-- **Twig** (Templating), **Doctrine DBAL** (DB).
-- HTML-Sanitizing: htmLawed (bereits vorhanden) bzw. HTML Purifier.
-- Mail: PHPMailer, auf **eine** Version konsolidieren (via Composer).
-- Logging: Monolog (PSR-3).
-- i18n: native `MessageFormatter` (ICU) aus `ext-intl`.
+- **Symfony 7.x components** (HttpFoundation, Routing, DependencyInjection, Console,
+  EventDispatcher, Cache, Dotenv).
+- **Twig** (templating), **Doctrine DBAL** (DB), **Monolog** (PSR-3 logging).
+- HTML sanitizing: htmLawed (already present) or HTML Purifier.
+- Mail: PHPMailer, consolidated to one version (via Composer).
 
-> *Vor Phase 2 final bestätigen.* Da Composer lokal den Abhängigkeitsbaum auflöst und `vendor/`
-> committet wird, ist das Vendoring trivial — kein Hand-Pflegen von Abhängigkeiten nötig.
-
-## Ziel-Verzeichnislayout (im Aufbau)
+## Target directory layout (in progress)
 
 ```
-public/        # Front Controller (index.php), Assets
-src/           # PSR-4: Namespace Q2A\  → src/ (eigener Autoloader)
+public/        # Front controller (index.php), assets
+src/           # PSR-4: namespace Q2A\ → src/
 templates/     # Twig
-config/        # DI, Routing, Konfiguration
-translations/  # i18n-Ressourcen
-migrations/    # Doctrine Migrations
-vendor/        # Composer-Abhängigkeiten (committet) inkl. Autoloader
-qa-tests/      # PHPUnit-Suite (committet, von End-Usern löschbar)
+config/        # DI, routing, configuration
+translations/  # i18n resources
+migrations/    # Doctrine migrations
+vendor/        # Composer deps (committed, production only) incl. autoloader
+vendor-bin/    # Dev tools (gitignored) via composer-bin-plugin
+qa-tests/      # PHPUnit suite (committed, deletable by end users)
 ```
 
-Die Legacy-Bäume `qa-include/`, `qa-theme/`, `qa-plugin/`, `qa-lang/` bleiben
-**parallel** bestehen, bis Parität erreicht ist (Entfernung in Phase 9).
+Legacy trees `qa-include/`, `qa-theme/`, `qa-plugin/`, `qa-lang/` stay in **parallel** until
+parity is reached (removed in Phase 9).
 
-## Coding-Standard
+## Coding standard
 
-- `declare(strict_types=1);` direkt nach dem Datei-Header.
-- PSR-12, 4 Spaces, kein schließendes `?>`, UTF-8 ohne BOM, kein Trailing Whitespace.
-- Strikte Typen überall; **kein implizites Nullable** — `?string $x = null`, nie `string $x = null`.
-- PHPStan Level max und php-cs-fixer (PSR-12) müssen grün sein, bevor eine Aufgabe „fertig" ist
-  (`composer check` führt cs + stan + test gemeinsam aus).
+- `declare(strict_types=1);` right after the file header.
+- PSR-12, 4 spaces, no closing `?>`, UTF-8 without BOM, no trailing whitespace.
+- Strict types everywhere; **no implicit nullable** — `?string $x = null`, never `string $x = null`.
+- PHPStan level max and php-cs-fixer (PSR-12) must pass before a task is "done"
+  (`composer check` runs cs + stan + test).
 
-### PHP-8.4-Features — bewusst einsetzen
+### PHP 8.4 features — use deliberately
 
-**Verwenden:**
-- Asymmetrische Sichtbarkeit (`public private(set)`) für Entities/Value Objects.
+**Use:**
+- Asymmetric visibility (`public private(set)`) for entities/value objects.
 - `array_find` / `array_any` / `array_all` / `array_find_key`.
-- `new X()->method()` ohne Klammern (Stil, niedrige Priorität).
-- `mb_trim` / `mb_ucfirst` / `mb_lcfirst` für Multibyte — **aber Trimmen ≠ Sanitizing**.
-- Enums, `readonly`-Klassen/Properties für DTOs, typisierte Konstanten, named args, First-class callables.
-- `password_hash` mit Bcrypt-Kosten 12 / Argon2id + `password_needs_rehash()` beim Login.
+- `new X()->method()` without parentheses (style, low priority).
+- `mb_trim` / `mb_ucfirst` / `mb_lcfirst` for multibyte — **but trimming ≠ sanitizing**.
+- Enums, `readonly` classes/properties for DTOs, typed constants, named args, first-class callables.
+- `password_hash` with bcrypt cost 12 / Argon2id + `password_needs_rehash()` on login.
 
-**Mit Vorbehalt / nicht dogmatisch:**
-- Property Hooks: nur für neuen OOP-Code, selektiv (nicht mit `readonly` kombinierbar, leichter Overhead).
-  Bestehende Getter nicht pauschal ersetzen.
+**With caution / not dogmatic:**
+- Property hooks: only for new OOP code, selectively (not combinable with `readonly`, slight
+  overhead). Don't replace existing getters wholesale.
 
-**Nicht tun:**
-- DOM-HTML5 (`\Dom\HTMLDocument`) **nicht** als Ersatz für HTML-Sanitizing verwenden
-  (das ist Parsen, kein Sicherheits-Filtern). Sanitizing bleibt bei htmLawed / HTML Purifier.
-- `mb_trim` nicht mit Eingabe-Sanitisierung verwechseln.
-- End-User nie zwingen, Composer auszuführen — `vendor/` ist immer committet/im Release enthalten.
+**Don't:**
+- Don't use DOM-HTML5 (`\Dom\HTMLDocument`) as a replacement for HTML sanitizing (that's parsing,
+  not security filtering). Sanitizing stays with htmLawed / HTML Purifier.
+- Don't confuse `mb_trim` with input sanitization.
+- Never force end users to run Composer — `vendor/` is always committed / in the release.
 
-## Lizenz & Attribution (GPL-konform)
+## License & attribution (GPL-compliant)
 
-- Lizenz: **GPL-2.0-or-later** (SPDX). Original-Urheberrecht von **Gideon Greenspan und
-  contributors** bleibt erhalten — nichts entfernen.
-- „**Ramon Kaes**" (mit *ae*) wird als Maintainer der Modernisierung ergänzt, GitHub-Standard:
-  Eintrag in `AUTHORS`/`NOTICE`, Co-Authored-By in Commits, Ergänzung im Datei-Header.
+- License: **GPL-2.0-or-later** (SPDX). The original copyright of **Gideon Greenspan and
+  contributors** stays — remove nothing.
+- "**Ramon Kaes**" (with *ae*) is added as the modernization maintainer (GitHub standard):
+  entry in `AUTHORS`/`NOTICE`, Co-Authored-By in commits, a line in the file header.
 
-Datei-Header-Vorlage für **neue** Dateien:
+Header template for **new** files:
 
 ```php
 <?php
@@ -111,8 +107,8 @@ Datei-Header-Vorlage für **neue** Dateien:
 
     Modernization (PHP 8.4+, 2026) by Ramon Kaes
 
-    File: <pfad/zur/datei.php>
-    Description: <kurzbeschreibung>
+    File: <path/to/file.php>
+    Description: <short description>
 
     License: GPL-2.0-or-later — see LICENSE
 */
@@ -120,48 +116,27 @@ Datei-Header-Vorlage für **neue** Dateien:
 declare(strict_types=1);
 ```
 
-> Hinweis: php-cs-fixer (`@PSR12`) erwartet eine Leerzeile zwischen `<?php` und dem Header-Kommentar.
+> php-cs-fixer (`@PSR12`) expects a blank line between `<?php` and the header comment.
 
 ## Tests
 
-- Test-Suite liegt in **[qa-tests/](qa-tests/)** (bestehender Ordner, **committet**;
-  End-User können ihn gefahrlos löschen — siehe dessen README).
-- Framework: PHPUnit 11/12 mit Attributen (`#[Test]`, `#[Group]`), nicht Annotations.
-- Bestehende Cases unter [qa-tests/tests/](qa-tests/tests/) als Vorlage modernisieren.
-- Jede neue Klasse braucht Unit-Tests.
+- The suite lives in [qa-tests/](qa-tests/) (committed; end users can safely delete it). New
+  tests go under `qa-tests/unit/` (namespace `Q2A\Tests\`).
+- PHPUnit 11/12 with attributes (`#[Test]`, `#[CoversClass]`), not annotations.
+- Every new class needs unit tests.
 
-## Arbeitsweise für Claude
+## Working method for Claude
 
-- Sprache mit dem Maintainer: **Deutsch**.
-- Roadmap **der Reihe nach** abarbeiten; nach jeder erledigten Aufgabe „Aktueller Stand" updaten.
-- Keine Aufgabe als erledigt melden, ohne dass php-cs-fixer + PHPStan + relevante Tests grün sind (`composer check`).
-- Bei Architektur-Weichen, die mehrere Phasen prägen, Rücksprache halten statt raten.
-- Commits/PRs nur auf Aufforderung; nicht auf den Default-Branch committen ohne Branch.
+- **Communicate with the maintainer in German.**
+- Work through the roadmap in order; track progress in [ROADMAP.md](ROADMAP.md).
+- Don't report a task as done unless php-cs-fixer + PHPStan + relevant tests pass (`composer check`).
+- For architectural forks that shape multiple phases, ask rather than guess.
+- Commits/PRs only when asked; never commit to the default branch without a branch.
 
-## Ist-Zustand der Altanwendung (Referenz)
+## Legacy app (reference)
 
-- Q2A **1.8.8**, rein prozedural, `qa-*`-Dateipräfixe; wenige Klassen unter
-  [qa-include/Q2A/](qa-include/Q2A/) (Faux-Namespace PSR-0, eigener Autoloader in
+- Q2A **1.8.8**, purely procedural, `qa-*` file prefixes; a few classes under
+  [qa-include/Q2A/](qa-include/Q2A/) (faux-namespace PSR-0, own autoloader in
   [qa-include/qa-base.php](qa-include/qa-base.php)).
-- DB: **mysqli** mit eigenem Query-Building ([qa-include/qa-db.php](qa-include/qa-db.php)).
-- Bisher kein Composer; künftig Composer als **lokales Build-Werkzeug**, `vendor/` committet. Min-PHP deklariert 5.1.6.
-- Zwei gebündelte PHPMailer-Versionen + `password_compat`-Shim (Altlasten → konsolidieren/entfernen).
-
-## Aktueller Stand
-
-- **Phase:** 2 (Architektur-Grundgerüst) — in Arbeit. Erledigt: Front Controller, Router
-  (Symfony Routing, Controller-Interface, 404), DI-Container, `.env`-Konfiguration (Dotenv →
-  typisiertes `AppConfig`, autowired). Offen: Doctrine-DBAL-Connection, Twig, Error-Handling/Logging.
-- **Stack installiert:** Symfony 7.4-Komponenten (HttpFoundation, Routing, DI, Config, Console,
-  EventDispatcher, Cache, Dotenv), Twig 3, Doctrine DBAL 4 + Migrations, Monolog 3; dev: PHPUnit 11.5,
-  PHPStan 2, Rector 2, php-cs-fixer 3 (in `vendor-bin/`, gitignored). Committet wird nur das
-  Produktions-`vendor/` (~14 MB) + `composer.lock`.
-- **Pipeline grün (lokal verifiziert):** `composer cs` (PSR-12), `composer stan` (level max),
-  `composer test` (PHPUnit), `composer rector` laufen fehlerfrei. CI unter
-  [.github/workflows/ci.yml](.github/workflows/ci.yml).
-- **Erledigt (Phase 0–1):** Planung (ROADMAP/CLAUDE); Attribution (AUTHORS/NOTICE, SPDX);
-  `LICENSE` auf GPLv2-Text gesetzt; `composer.json`/`.lock` + `vendor/`; `src/Version.php` (PSR-4);
-  `phpstan.neon`; `.php-cs-fixer.dist.php`; `rector.php`; `phpunit.xml.dist` + Smoke-Test;
-  CONTRIBUTING.md (PSR-12 + Tooling); `SECURITY.md`; `CHANGELOG.md`; CI-Workflow.
-- **Nächster Schritt:** **Phase 2** — Front Controller (`public/index.php`), Routing, DI-Container,
-  `.env`-Konfiguration, Doctrine-DBAL-Connection-Factory, Twig-Integration mit Basis-Layout.
+- DB: **mysqli** with hand-rolled query building ([qa-include/qa-db.php](qa-include/qa-db.php)).
+- Two bundled PHPMailer versions + a `password_compat` shim (legacy → consolidate/remove).
