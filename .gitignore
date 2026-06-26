@@ -16,6 +16,15 @@
 /.phpunit.result.cache
 /.phpunit.cache/
 
+# Editors / IDEs
+.idea/
+.vscode/
+
+# Build & coverage artifacts
+/coverage/
+/build/
+*.log
+
 # Other files
 .DS_Store
 .DS_Store?
@@ -24,4 +33,3 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-.idea/

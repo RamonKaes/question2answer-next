@@ -1,0 +1,28 @@
+# .claudeignore — keeps large, generated or legacy paths out of the AI context
+# to save tokens. These files can still be opened explicitly when needed.
+
+# Vendored Composer dependencies (committed for end users, but never need reading)
+/vendor/
+/composer.lock
+
+# Legacy Q2A 1.8.8 trees — untouched until Phase 9 (see ROADMAP.md)
+/qa-include/
+/qa-theme/
+/qa-plugin/
+/qa-lang/
+/qa-content/
+/qa-external-example/
+
+# Legacy test harness (superseded by qa-tests/unit/)
+/qa-tests/tests/
+/qa-tests/phpcs/
+/qa-tests/Q2A_TestsSetup.php
+/qa-tests/Q2A_TestsUtils.php
+/qa-tests/autoload.php
+
+# Caches & runtime artifacts
+/qa-cache/
+/.phpunit.cache/
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+*.log
