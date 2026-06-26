@@ -6,6 +6,11 @@
 # Ignore cached files
 /qa-cache/*/
 
+# Local environment overrides / secrets (symfony/dotenv); .env itself is committed
+/.env.local
+/.env.local.php
+/.env.*.local
+
 # Dev tool caches (vendor/ is intentionally committed, do NOT ignore it)
 /.php-cs-fixer.cache
 /.phpunit.result.cache

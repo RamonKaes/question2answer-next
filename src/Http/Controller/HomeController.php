@@ -16,16 +16,25 @@ declare(strict_types=1);
 
 namespace Q2A\Http\Controller;
 
+use Q2A\Config\AppConfig;
 use Q2A\Version;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class HomeController implements Controller
 {
+    public function __construct(private readonly AppConfig $config)
+    {
+    }
+
     public function __invoke(Request $request): Response
     {
         return new Response(
-            'Question2Answer ' . Version::CURRENT . " is running.\n",
+            sprintf(
+                "Question2Answer %s is running (env: %s).\n",
+                Version::CURRENT,
+                $this->config->environment,
+            ),
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain; charset=utf-8'],
         );

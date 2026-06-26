@@ -14,10 +14,16 @@
 
 declare(strict_types=1);
 
+use Q2A\Config\AppConfig;
 use Q2A\Http\Controller\HomeController;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 $container = new ContainerBuilder();
+
+// Typed application configuration, built from the environment (symfony/dotenv).
+$container->register(AppConfig::class, AppConfig::class)
+    ->setFactory([AppConfig::class, 'fromEnv'])
+    ->setPublic(true);
 
 // Controllers are resolved from the container by the kernel, so they must be
 // registered as public, autowired services. Further controllers are added here

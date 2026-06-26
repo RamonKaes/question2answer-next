@@ -18,6 +18,7 @@ namespace Q2A\Tests\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Q2A\Config\AppConfig;
 use Q2A\Http\Controller\HomeController;
 use Q2A\Http\Kernel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,11 +35,7 @@ final class KernelTest extends TestCase
         $routes = new RouteCollection();
         $routes->add('home', new Route('/', ['_controller' => HomeController::class]));
 
-        $container = new ContainerBuilder();
-        $container->register(HomeController::class, HomeController::class)->setPublic(true);
-        $container->compile();
-
-        $response = new Kernel($routes, $container)->handle(Request::create('/'));
+        $response = new Kernel($routes, $this->buildContainer())->handle(Request::create('/'));
 
         self::assertSame(Response::HTTP_OK, $response->getStatusCode());
         self::assertStringContainsString('Question2Answer', (string) $response->getContent());
@@ -46,11 +43,22 @@ final class KernelTest extends TestCase
 
     public function testHandleReturnsNotFoundForUnknownRoute(): void
     {
-        $container = new ContainerBuilder();
-        $container->compile();
-
-        $response = new Kernel(new RouteCollection(), $container)->handle(Request::create('/missing'));
+        $response = new Kernel(new RouteCollection(), $this->buildContainer())->handle(Request::create('/missing'));
 
         self::assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
+
+    private function buildContainer(): ContainerBuilder
+    {
+        $container = new ContainerBuilder();
+        $container->register(AppConfig::class, AppConfig::class)
+            ->setFactory([AppConfig::class, 'fromEnv'])
+            ->setPublic(true);
+        $container->register(HomeController::class, HomeController::class)
+            ->setAutowired(true)
+            ->setPublic(true);
+        $container->compile();
+
+        return $container;
     }
 }
